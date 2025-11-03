@@ -112,6 +112,10 @@ export default {
         'gradient-radial': 'var(--gradient-radial)',
         'gradient-shine': 'var(--gradient-shine)',
       },
+      fontFamily: {
+        arabic: ['Amiri', 'serif'],
+        sans: ['ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+      },
     },
   },
   plugins: [require("tailwindcss-animate")],
