@@ -1,50 +1,78 @@
-import { Crown, Award, Sparkles } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState, useEffect } from "react";
+import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Crown, Award, Sparkles } from "lucide-react";
 
 interface User {
   id: number;
   name: string;
-  juzCompleted: number;
+  juz: number;
+  surah: number;
+  ayah: number;
   avatar?: string;
 }
 
 const mockUsers: User[] = [
-  { id: 1, name: "Fatima", juzCompleted: 28, avatar: "/placeholder.svg" },
-  { id: 2, name: "Ahmed", juzCompleted: 25, avatar: "/placeholder.svg" },
-  { id: 3, name: "Aisha", juzCompleted: 22, avatar: "/placeholder.svg" },
-  { id: 4, name: "Omar", juzCompleted: 20, avatar: "/placeholder.svg" },
-  { id: 5, name: "Khadija", juzCompleted: 18, avatar: "/placeholder.svg" },
+  { id: 1, name: "Fatima", juz: 30, surah: 114, ayah: 6 },
+  { id: 2, name: "Ahmed", juz: 28, surah: 109, ayah: 3 },
+  { id: 3, name: "Yusuf", juz: 25, surah: 95, ayah: 8 },
+  { id: 4, name: "Maryam", juz: 22, surah: 85, ayah: 12 },
+  { id: 5, name: "Ibrahim", juz: 20, surah: 75, ayah: 5 },
 ];
 
 const Leaderboard = () => {
+  const [users, setUsers] = useState<User[]>(mockUsers);
+
+  useEffect(() => {
+    const updateLeaderboard = () => {
+      const myEntry = localStorage.getItem("myLeaderboardEntry");
+      if (myEntry) {
+        const entry = JSON.parse(myEntry);
+        const newUser: User = {
+          id: 999,
+          name: entry.name || "You",
+          juz: entry.juz || 0,
+          surah: entry.surah || 1,
+          ayah: entry.ayah || 1,
+          avatar: entry.avatar,
+        };
+        
+        const filtered = mockUsers.filter(u => u.id !== 999);
+        const updated = [...filtered, newUser].sort((a, b) => {
+          if (b.juz !== a.juz) return b.juz - a.juz;
+          if (b.surah !== a.surah) return b.surah - a.surah;
+          return b.ayah - a.ayah;
+        });
+        
+        setUsers(updated);
+      }
+    };
+
+    updateLeaderboard();
+    window.addEventListener("storage", updateLeaderboard);
+    return () => window.removeEventListener("storage", updateLeaderboard);
+  }, []);
+
   return (
-    <section className="py-20 px-6">
+    <section className="py-20 px-6 bg-background" aria-labelledby="leaderboard-title">
       <div className="container max-w-4xl mx-auto">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold mb-4 text-foreground">
-            Global Leaderboard
+        <div className="text-center mb-12 animate-fade-in">
+          <div className="flex justify-center mb-4">
+            <Trophy className="w-12 h-12 text-primary" aria-hidden="true" />
+          </div>
+          <h2 id="leaderboard-title" className="text-3xl font-bold mb-2 text-foreground">
+            Global Leaderboard 🏆
           </h2>
           <p className="text-muted-foreground">
-            Celebrating our community's dedication
+            See who's lighting up the path with noor!
           </p>
         </div>
 
-        <Card className="bg-card border-border shadow-glow">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-foreground">
-              <Trophy className="text-primary" />
-              Top Memorizers
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4" role="list" aria-label="Top memorizers leaderboard">
-              {mockUsers.map((user, index) => (
-                <LeaderboardRow 
-                  key={user.id} 
-                  user={user} 
-                  rank={index + 1} 
-                />
+        <Card className="bg-card border-border">
+          <CardContent className="p-6">
+            <div className="space-y-4">
+              {users.map((user, index) => (
+                <LeaderboardRow key={user.id} user={user} rank={index + 1} />
               ))}
             </div>
           </CardContent>
@@ -60,59 +88,62 @@ const LeaderboardRow = ({ user, rank }: { user: User; rank: number }) => {
 
   return (
     <div 
-      className={`flex items-center gap-4 p-4 rounded-lg transition-all ${
+      className={`flex items-center justify-between p-4 rounded-lg transition-all ${
         isChampion 
-          ? 'bg-primary/10 border-2 border-primary shadow-crown' 
+          ? 'bg-primary/10 border-2 border-primary animate-glow-pulse' 
           : isTopThree 
           ? 'bg-secondary/10 border border-secondary/30' 
           : 'bg-muted/30 border border-border hover:border-primary/30'
       }`}
       role="listitem"
-      aria-label={`Rank ${rank}: ${user.name} with ${user.juzCompleted} Juz completed`}
+      aria-label={`Rank ${rank}: ${user.name} with ${user.juz} Juz, Surah ${user.surah}, Ayah ${user.ayah}`}
     >
-      {/* Rank with special styling for top 3 */}
-      <div className="flex-shrink-0 w-12 text-center">
-        {isChampion ? (
-          <Crown 
-            className="w-8 h-8 text-primary animate-crown-float mx-auto" 
-            aria-label="First place crown"
-            role="img"
-          />
-        ) : isTopThree ? (
-          <Award 
-            className="w-6 h-6 text-secondary mx-auto" 
-            aria-label={`${rank === 2 ? 'Second' : 'Third'} place medal`}
-            role="img"
-          />
-        ) : (
-          <span className="text-2xl font-bold text-muted-foreground">
-            {rank}
-          </span>
-        )}
+      {/* Left side: Rank + Avatar + Name */}
+      <div className="flex items-center gap-3 flex-1">
+        <span className="text-lg font-bold text-muted-foreground min-w-[2rem]">
+          #{rank}
+        </span>
+        <Avatar className="h-10 w-10">
+          <AvatarImage src={user.avatar} alt={`${user.name}'s avatar`} />
+          <AvatarFallback className="bg-primary/10 text-primary">
+            {user.name.charAt(0)}
+          </AvatarFallback>
+        </Avatar>
+        <span className="font-semibold text-foreground">{user.name}</span>
       </div>
 
-      {/* Avatar */}
-      <Avatar className="h-12 w-12">
-        <AvatarImage src={user.avatar} alt={`${user.name}'s profile picture`} />
-        <AvatarFallback className="bg-primary/20 text-primary font-semibold">
-          {user.name.substring(0, 2).toUpperCase()}
-        </AvatarFallback>
-      </Avatar>
-
-      {/* User info */}
-      <div className="flex-grow">
-        <p className="font-semibold text-foreground">{user.name}</p>
-        <p className="text-sm text-muted-foreground">
-          {user.juzCompleted} Juz completed
-        </p>
-      </div>
-
-      {/* Achievement badge */}
-      {isChampion && (
-        <div className="flex items-center gap-1 text-primary text-sm font-semibold">
-          <Sparkles className="w-4 h-4 animate-glow-pulse" aria-hidden="true" />
-          <span>MashaAllah!</span>
+      {/* Right side: Stats */}
+      <div className="text-right">
+        <div className="text-2xl font-bold text-foreground">
+          {user.juz} Juz
         </div>
+        <div className="text-sm text-muted-foreground">
+          Surah {user.surah}, Ayah {user.ayah}
+        </div>
+      </div>
+
+      {/* Crown for champion */}
+      {isChampion && (
+        <Crown 
+          className="w-6 h-6 text-primary ml-2 animate-crown-float" 
+          aria-label="Champion crown"
+        />
+      )}
+      
+      {/* Award for top 3 */}
+      {isTopThree && !isChampion && (
+        <Award 
+          className="w-5 h-5 text-secondary ml-2" 
+          aria-label="Top 3 award"
+        />
+      )}
+
+      {/* Sparkles for champion */}
+      {isChampion && (
+        <Sparkles 
+          className="w-5 h-5 text-primary ml-1 animate-shimmer" 
+          aria-label="Excellence"
+        />
       )}
     </div>
   );

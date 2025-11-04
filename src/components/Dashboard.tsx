@@ -1,27 +1,69 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import ProgressCircle from "./ProgressCircle";
-import { BookOpen, Mic, Heart } from "lucide-react";
+import ProgressSelector from "./ProgressSelector";
+import { BookOpen, Mic, Heart, Settings } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 const Dashboard = () => {
-  // Mock user data
-  const userName = "Aisha";
-  const juzCompleted = 18;
+  const navigate = useNavigate();
+  const [userName, setUserName] = useState("User");
+  const [juzCompleted, setJuzCompleted] = useState(0);
   const totalJuz = 30;
   const ayahsMemorized = 245;
   const currentStreak = 12;
 
+  useEffect(() => {
+    const profile = localStorage.getItem("userProfile");
+    if (profile) {
+      const data = JSON.parse(profile);
+      setUserName(data.username || "User");
+    }
+
+    const progress = localStorage.getItem("quranProgress");
+    if (progress) {
+      const data = JSON.parse(progress);
+      setJuzCompleted(data.juz || 0);
+    }
+
+    const handleStorageChange = () => {
+      const updatedProgress = localStorage.getItem("quranProgress");
+      if (updatedProgress) {
+        const data = JSON.parse(updatedProgress);
+        setJuzCompleted(data.juz || 0);
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, []);
+
   return (
     <section className="py-20 px-6 bg-background">
       <div className="container max-w-6xl mx-auto">
-        {/* Greeting */}
-        <div className="mb-12 text-center animate-fade-in">
+        {/* Greeting & Settings */}
+        <div className="mb-12 text-center animate-fade-in relative">
+          <Button
+            variant="outline"
+            size="icon"
+            className="absolute right-0 top-0"
+            onClick={() => navigate("/profile")}
+            aria-label="Profile settings"
+          >
+            <Settings className="h-5 w-5" />
+          </Button>
           <h2 className="text-3xl font-bold mb-2 text-foreground">
             As-salamu alaikum, {userName}! 🌙
           </h2>
           <p className="text-muted-foreground">
             Ready to light up your journey today?
           </p>
+        </div>
+
+        {/* Progress Selector */}
+        <div className="mb-8">
+          <ProgressSelector />
         </div>
 
         {/* Main stats grid */}
