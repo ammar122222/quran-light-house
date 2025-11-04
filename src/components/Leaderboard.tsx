@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Crown, Award, Sparkles } from "lucide-react";
+import { Crown, Award, Sparkles, ChevronDown, ChevronUp } from "lucide-react";
 
 interface User {
   id: number;
@@ -18,10 +19,26 @@ const mockUsers: User[] = [
   { id: 3, name: "Yusuf", juz: 25, surah: 95, ayah: 8 },
   { id: 4, name: "Maryam", juz: 22, surah: 85, ayah: 12 },
   { id: 5, name: "Ibrahim", juz: 20, surah: 75, ayah: 5 },
+  { id: 6, name: "Khadija", juz: 18, surah: 70, ayah: 2 },
+  { id: 7, name: "Omar", juz: 16, surah: 62, ayah: 11 },
+  { id: 8, name: "Aisha", juz: 15, surah: 58, ayah: 4 },
+  { id: 9, name: "Ali", juz: 14, surah: 55, ayah: 78 },
+  { id: 10, name: "Safiya", juz: 12, surah: 48, ayah: 29 },
+  { id: 11, name: "Bilal", juz: 11, surah: 45, ayah: 37 },
+  { id: 12, name: "Zaynab", juz: 10, surah: 42, ayah: 53 },
+  { id: 13, name: "Hassan", juz: 9, surah: 39, ayah: 75 },
+  { id: 14, name: "Ruqayyah", juz: 8, surah: 36, ayah: 83 },
+  { id: 15, name: "Hamza", juz: 7, surah: 33, ayah: 73 },
+  { id: 16, name: "Sumaya", juz: 6, surah: 30, ayah: 60 },
+  { id: 17, name: "Uthman", juz: 5, surah: 27, ayah: 93 },
+  { id: 18, name: "Asma", juz: 4, surah: 24, ayah: 64 },
+  { id: 19, name: "Zaid", juz: 3, surah: 21, ayah: 112 },
+  { id: 20, name: "Hafsa", juz: 2, surah: 18, ayah: 110 },
 ];
 
 const Leaderboard = () => {
   const [users, setUsers] = useState<User[]>(mockUsers);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   useEffect(() => {
     const updateLeaderboard = () => {
@@ -53,6 +70,9 @@ const Leaderboard = () => {
     return () => window.removeEventListener("storage", updateLeaderboard);
   }, []);
 
+  const displayedUsers = isExpanded ? users : users.slice(0, 6);
+  const hasMore = users.length > 6;
+
   return (
     <section className="py-20 px-6 bg-background" aria-labelledby="leaderboard-title">
       <div className="container max-w-4xl mx-auto">
@@ -71,10 +91,32 @@ const Leaderboard = () => {
         <Card className="bg-card border-border">
           <CardContent className="p-6">
             <div className="space-y-4">
-              {users.map((user, index) => (
+              {displayedUsers.map((user, index) => (
                 <LeaderboardRow key={user.id} user={user} rank={index + 1} />
               ))}
             </div>
+
+            {hasMore && (
+              <div className="mt-6 text-center">
+                <Button
+                  variant="outline"
+                  onClick={() => setIsExpanded(!isExpanded)}
+                  className="border-primary/30 text-primary hover:bg-primary/10"
+                >
+                  {isExpanded ? (
+                    <>
+                      <ChevronUp className="mr-2 h-4 w-4" />
+                      Show Less
+                    </>
+                  ) : (
+                    <>
+                      <ChevronDown className="mr-2 h-4 w-4" />
+                      Show All {users.length} Members
+                    </>
+                  )}
+                </Button>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>

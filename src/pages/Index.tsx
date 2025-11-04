@@ -1,7 +1,6 @@
 import Hero from "@/components/Hero";
 import Dashboard from "@/components/Dashboard";
 import Leaderboard from "@/components/Leaderboard";
-import AccessibilityFeatures from "@/components/AccessibilityFeatures";
 
 const Index = () => {
   return (
@@ -9,7 +8,6 @@ const Index = () => {
       <Hero />
       <Dashboard />
       <Leaderboard />
-      <AccessibilityFeatures />
     </div>
   );
 };
