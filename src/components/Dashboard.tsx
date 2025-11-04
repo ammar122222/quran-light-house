@@ -1,7 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import ProgressCircle from "./ProgressCircle";
-import ProgressSelector from "./ProgressSelector";
 import { BookOpen, Mic, Heart, Settings } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -61,10 +60,7 @@ const Dashboard = () => {
           </p>
         </div>
 
-        {/* Progress Selector */}
-        <div className="mb-8">
-          <ProgressSelector />
-        </div>
+        {/* Note: Progress selector moved to Profile page */}
 
         {/* Main stats grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">

@@ -42,27 +42,50 @@ const Leaderboard = () => {
 
   useEffect(() => {
     const updateLeaderboard = () => {
-      const myEntry = localStorage.getItem("myLeaderboardEntry");
-      if (myEntry) {
-        const entry = JSON.parse(myEntry);
-        const newUser: User = {
-          id: 999,
-          name: entry.name || "You",
-          juz: entry.juz || 0,
-          surah: entry.surah || 1,
-          ayah: entry.ayah || 1,
-          avatar: entry.avatar,
-        };
-        
-        const filtered = mockUsers.filter(u => u.id !== 999);
-        const updated = [...filtered, newUser].sort((a, b) => {
-          if (b.juz !== a.juz) return b.juz - a.juz;
-          if (b.surah !== a.surah) return b.surah - a.surah;
-          return b.ayah - a.ayah;
-        });
-        
-        setUsers(updated);
-      }
+      const allUsers: User[] = [...mockUsers];
+      const familyMembers = [
+        "Bilal Qureshi",
+        "Umar Qureshi",
+        "Abdullah Qureshi",
+        "Abir Qureshi",
+        "Ammar Qureshi",
+        "Arif Qureshi",
+        "Hoorab",
+        "Amna",
+        "Lareb",
+        "Mama",
+      ];
+
+      familyMembers.forEach((member, index) => {
+        const key = `progress_${member.replace(/\s+/g, "_")}`;
+        const saved = localStorage.getItem(key);
+        if (saved) {
+          const progress = JSON.parse(saved);
+          const existingIndex = allUsers.findIndex(u => u.id === 900 + index);
+          const user: User = {
+            id: 900 + index,
+            name: member,
+            juz: progress.juz || 0,
+            surah: progress.surah || 1,
+            ayah: progress.ayah || 1,
+            avatar: progress.avatar,
+          };
+          
+          if (existingIndex >= 0) {
+            allUsers[existingIndex] = user;
+          } else {
+            allUsers.push(user);
+          }
+        }
+      });
+
+      const sorted = allUsers.sort((a, b) => {
+        if (b.juz !== a.juz) return b.juz - a.juz;
+        if (b.surah !== a.surah) return b.surah - a.surah;
+        return b.ayah - a.ayah;
+      });
+
+      setUsers(sorted);
     };
 
     updateLeaderboard();
