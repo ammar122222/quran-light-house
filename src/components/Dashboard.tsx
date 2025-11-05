@@ -1,24 +1,26 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import ProgressCircle from "./ProgressCircle";
+import ProgressSelector from "./ProgressSelector";
 import { BookOpen, Mic, Heart, Settings } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { User } from "firebase/auth";
 
-interface DashboardProps {
-  user: User;
-}
-
-const Dashboard = ({ user }: DashboardProps) => {
+const Dashboard = () => {
   const navigate = useNavigate();
-  const userName = user.displayName || "User";
+  const [userName, setUserName] = useState("User");
   const [juzCompleted, setJuzCompleted] = useState(0);
   const totalJuz = 30;
   const ayahsMemorized = 245;
   const currentStreak = 12;
 
   useEffect(() => {
+    const profile = localStorage.getItem("userProfile");
+    if (profile) {
+      const data = JSON.parse(profile);
+      setUserName(data.username || "User");
+    }
+
     const progress = localStorage.getItem("quranProgress");
     if (progress) {
       const data = JSON.parse(progress);
@@ -59,7 +61,10 @@ const Dashboard = ({ user }: DashboardProps) => {
           </p>
         </div>
 
-        {/* Note: Progress selector moved to Profile page */}
+        {/* Progress Selector */}
+        <div className="mb-8">
+          <ProgressSelector />
+        </div>
 
         {/* Main stats grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
