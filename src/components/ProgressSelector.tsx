@@ -10,42 +10,55 @@ interface ProgressData {
   juz: number;
   surah: number;
   ayah: number;
+  name: string;
+  lastUpdated: number;
 }
 
-const ProgressSelector = () => {
+interface ProgressSelectorProps {
+  selectedMember: string;
+}
+
+const ProgressSelector = ({ selectedMember }: ProgressSelectorProps) => {
   const { toast } = useToast();
   const [progress, setProgress] = useState<ProgressData>({
     juz: 0,
     surah: 1,
     ayah: 1,
+    name: selectedMember,
+    lastUpdated: Date.now(),
   });
 
   useEffect(() => {
-    const saved = localStorage.getItem("quranProgress");
+    const key = `progress_${selectedMember.replace(/\s+/g, "_")}`;
+    const saved = localStorage.getItem(key);
     if (saved) {
       setProgress(JSON.parse(saved));
+    } else {
+      setProgress({
+        juz: 0,
+        surah: 1,
+        ayah: 1,
+        name: selectedMember,
+        lastUpdated: Date.now(),
+      });
     }
-  }, []);
+  }, [selectedMember]);
 
   const handleSave = () => {
-    localStorage.setItem("quranProgress", JSON.stringify(progress));
-    
-    // Update leaderboard
-    const profile = JSON.parse(localStorage.getItem("userProfile") || "{}");
-    const leaderboardEntry = {
-      name: profile.username || "Anonymous",
-      avatar: profile.photoUrl || "",
+    const updatedProgress = {
       ...progress,
-      timestamp: Date.now(),
+      lastUpdated: Date.now(),
     };
-    localStorage.setItem("myLeaderboardEntry", JSON.stringify(leaderboardEntry));
-    
+
+    const key = `progress_${selectedMember.replace(/\s+/g, "_")}`;
+    localStorage.setItem(key, JSON.stringify(updatedProgress));
+
     // Trigger storage event for leaderboard update
     window.dispatchEvent(new Event("storage"));
 
     toast({
       title: "Progress Updated! 🌟",
-      description: `Juz ${progress.juz}, Surah ${progress.surah}, Ayah ${progress.ayah}`,
+      description: `${selectedMember}: Juz ${progress.juz}, Surah ${progress.surah}, Ayah ${progress.ayah}`,
     });
   };
 

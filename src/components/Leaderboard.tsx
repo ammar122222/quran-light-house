@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Crown, Award, Sparkles } from "lucide-react";
+import { Crown, Award, Sparkles, ChevronDown, ChevronUp } from "lucide-react";
+import { FAMILY_MEMBERS } from "./FamilyMemberSelector";
 
 interface User {
   id: number;
@@ -12,46 +14,47 @@ interface User {
   avatar?: string;
 }
 
-const mockUsers: User[] = [
-  { id: 1, name: "Fatima", juz: 30, surah: 114, ayah: 6 },
-  { id: 2, name: "Ahmed", juz: 28, surah: 109, ayah: 3 },
-  { id: 3, name: "Yusuf", juz: 25, surah: 95, ayah: 8 },
-  { id: 4, name: "Maryam", juz: 22, surah: 85, ayah: 12 },
-  { id: 5, name: "Ibrahim", juz: 20, surah: 75, ayah: 5 },
-];
-
 const Leaderboard = () => {
-  const [users, setUsers] = useState<User[]>(mockUsers);
+  const [users, setUsers] = useState<User[]>([]);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   useEffect(() => {
     const updateLeaderboard = () => {
-      const myEntry = localStorage.getItem("myLeaderboardEntry");
-      if (myEntry) {
-        const entry = JSON.parse(myEntry);
-        const newUser: User = {
-          id: 999,
-          name: entry.name || "You",
-          juz: entry.juz || 0,
-          surah: entry.surah || 1,
-          ayah: entry.ayah || 1,
-          avatar: entry.avatar,
+      const allUsers: User[] = [];
+
+      FAMILY_MEMBERS.forEach((member, index) => {
+        const key = `progress_${member.replace(/\s+/g, "_")}`;
+        const saved = localStorage.getItem(key);
+        const progress = saved ? JSON.parse(saved) : null;
+        
+        const user: User = {
+          id: index + 1,
+          name: member,
+          juz: progress?.juz || 0,
+          surah: progress?.surah || 1,
+          ayah: progress?.ayah || 1,
+          avatar: progress?.avatar,
         };
         
-        const filtered = mockUsers.filter(u => u.id !== 999);
-        const updated = [...filtered, newUser].sort((a, b) => {
-          if (b.juz !== a.juz) return b.juz - a.juz;
-          if (b.surah !== a.surah) return b.surah - a.surah;
-          return b.ayah - a.ayah;
-        });
-        
-        setUsers(updated);
-      }
+        allUsers.push(user);
+      });
+
+      const sorted = allUsers.sort((a, b) => {
+        if (b.juz !== a.juz) return b.juz - a.juz;
+        if (b.surah !== a.surah) return b.surah - a.surah;
+        return b.ayah - a.ayah;
+      });
+
+      setUsers(sorted);
     };
 
     updateLeaderboard();
     window.addEventListener("storage", updateLeaderboard);
     return () => window.removeEventListener("storage", updateLeaderboard);
   }, []);
+
+  const displayedUsers = isExpanded ? users : users.slice(0, 6);
+  const hasMore = users.length > 6;
 
   return (
     <section className="py-20 px-6 bg-background" aria-labelledby="leaderboard-title">
@@ -71,10 +74,32 @@ const Leaderboard = () => {
         <Card className="bg-card border-border">
           <CardContent className="p-6">
             <div className="space-y-4">
-              {users.map((user, index) => (
+              {displayedUsers.map((user, index) => (
                 <LeaderboardRow key={user.id} user={user} rank={index + 1} />
               ))}
             </div>
+
+            {hasMore && (
+              <div className="mt-6 text-center">
+                <Button
+                  variant="outline"
+                  onClick={() => setIsExpanded(!isExpanded)}
+                  className="border-primary/30 text-primary hover:bg-primary/10"
+                >
+                  {isExpanded ? (
+                    <>
+                      <ChevronUp className="mr-2 h-4 w-4" />
+                      Show Less
+                    </>
+                  ) : (
+                    <>
+                      <ChevronDown className="mr-2 h-4 w-4" />
+                      Show All {users.length} Members
+                    </>
+                  )}
+                </Button>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
