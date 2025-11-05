@@ -101,24 +101,34 @@ const FamilyMemberSelector = ({ onAuthenticated }: FamilyMemberSelectorProps) =>
   };
 
   return (
-    <Card className="bg-card border-border">
-      <CardHeader>
-        <CardTitle className="text-lg flex items-center gap-2 text-foreground">
-          <Users className="w-5 h-5 text-primary" />
-          Select Family Member
+    <Card className="bg-gradient-to-br from-card via-card to-primary/5 border-primary/30 shadow-lg">
+      <CardHeader className="pb-3">
+        <CardTitle className="text-2xl flex items-center gap-3 text-foreground">
+          <div className="p-2 bg-primary/10 rounded-lg">
+            <Users className="w-6 h-6 text-primary" />
+          </div>
+          Qurayshi Family Portal
         </CardTitle>
+        <p className="text-sm text-muted-foreground mt-2">
+          Select your name and authenticate to track your progress
+        </p>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="member">Family Member</Label>
+      <CardContent className="space-y-6">
+        <div className="space-y-3">
+          <Label htmlFor="member" className="text-base font-semibold">
+            Family Member
+          </Label>
           <Select value={selectedMember} onValueChange={setSelectedMember}>
-            <SelectTrigger>
-              <SelectValue placeholder="Choose a family member" />
+            <SelectTrigger className="h-12 text-base border-primary/20 focus:border-primary">
+              <SelectValue placeholder="Choose your name from the list" />
             </SelectTrigger>
             <SelectContent>
               {FAMILY_MEMBERS.map((member) => (
-                <SelectItem key={member} value={member}>
-                  {member}
+                <SelectItem key={member} value={member} className="text-base py-3">
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-primary"></div>
+                    {member}
+                  </div>
                 </SelectItem>
               ))}
             </SelectContent>
@@ -126,44 +136,50 @@ const FamilyMemberSelector = ({ onAuthenticated }: FamilyMemberSelectorProps) =>
         </div>
 
         {selectedMember && (
-          <>
-            <div className="space-y-2">
-              <Label htmlFor="pin" className="flex items-center gap-2">
-                <Lock className="w-4 h-4" />
-                {isSettingPin ? "Create PIN" : "Enter PIN"}
+          <div className="space-y-4 p-4 bg-secondary/5 rounded-lg border border-secondary/20">
+            <div className="space-y-3">
+              <Label htmlFor="pin" className="flex items-center gap-2 text-base font-semibold">
+                <div className="p-1 bg-primary/10 rounded">
+                  <Lock className="w-4 h-4 text-primary" />
+                </div>
+                {isSettingPin ? "Create Your PIN" : "Enter Your PIN"}
               </Label>
               <Input
                 id="pin"
                 type="password"
-                placeholder={isSettingPin ? "Create a PIN (min 4 digits)" : "Enter your PIN"}
+                placeholder={isSettingPin ? "Create a secure PIN (min 4 digits)" : "Enter your PIN"}
                 value={pin}
                 onChange={(e) => setPin(e.target.value)}
                 maxLength={8}
+                className="h-12 text-lg border-primary/20 focus:border-primary"
               />
             </div>
 
             {isSettingPin && (
-              <div className="space-y-2">
-                <Label htmlFor="confirmPin">Confirm PIN</Label>
+              <div className="space-y-3">
+                <Label htmlFor="confirmPin" className="text-base font-semibold">
+                  Confirm PIN
+                </Label>
                 <Input
                   id="confirmPin"
                   type="password"
-                  placeholder="Confirm your PIN"
+                  placeholder="Re-enter your PIN"
                   value={confirmPin}
                   onChange={(e) => setConfirmPin(e.target.value)}
                   maxLength={8}
+                  className="h-12 text-lg border-primary/20 focus:border-primary"
                 />
               </div>
             )}
 
             <Button
               onClick={isSettingPin ? handleSetPin : handleAuthenticate}
-              className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
+              className="w-full h-12 bg-primary text-primary-foreground hover:bg-primary/90 text-base font-semibold shadow-lg hover:shadow-xl transition-all"
             >
-              <Lock className="mr-2 h-4 w-4" />
-              {isSettingPin ? "Set PIN" : "Authenticate"}
+              <Lock className="mr-2 h-5 w-5" />
+              {isSettingPin ? "Create PIN & Continue" : "Authenticate"}
             </Button>
-          </>
+          </div>
         )}
       </CardContent>
     </Card>

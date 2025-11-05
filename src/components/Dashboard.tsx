@@ -4,22 +4,21 @@ import ProgressCircle from "./ProgressCircle";
 import { BookOpen, Mic, Heart, Settings } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { User } from "firebase/auth";
 
-const Dashboard = () => {
+interface DashboardProps {
+  user: User;
+}
+
+const Dashboard = ({ user }: DashboardProps) => {
   const navigate = useNavigate();
-  const [userName, setUserName] = useState("User");
+  const userName = user.displayName || "User";
   const [juzCompleted, setJuzCompleted] = useState(0);
   const totalJuz = 30;
   const ayahsMemorized = 245;
   const currentStreak = 12;
 
   useEffect(() => {
-    const profile = localStorage.getItem("userProfile");
-    if (profile) {
-      const data = JSON.parse(profile);
-      setUserName(data.username || "User");
-    }
-
     const progress = localStorage.getItem("quranProgress");
     if (progress) {
       const data = JSON.parse(progress);

@@ -6,9 +6,12 @@ import { useNavigate } from "react-router-dom";
 import FamilyMemberSelector from "@/components/FamilyMemberSelector";
 import ProgressSelector from "@/components/ProgressSelector";
 import ProgressAnalytics from "@/components/ProgressAnalytics";
+import VoiceRecorder from "@/components/VoiceRecorder";
+import { useAuth } from "@/hooks/useAuth";
 
 const Profile = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [authenticatedMember, setAuthenticatedMember] = useState<string | null>(null);
 
   const handleAuthenticated = (memberName: string) => {
@@ -45,6 +48,10 @@ const Profile = () => {
             </Card>
 
             <ProgressSelector selectedMember={authenticatedMember} />
+
+            {user && (
+              <VoiceRecorder userId={user.uid} userName={authenticatedMember} />
+            )}
 
             <ProgressAnalytics />
 
