@@ -1,14 +1,29 @@
 import { Button } from "@/components/ui/button";
-import { Sparkles, BookOpen, Trophy } from "lucide-react";
+import { Sparkles, BookOpen } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { signInWithPopup } from "firebase/auth";
+import { auth, googleProvider } from "@/lib/firebase";
+import { useToast } from "@/hooks/use-toast";
 
 const Hero = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
 
-  const handleGoogleSignIn = () => {
-    // Placeholder for Google Sign-In SDK integration
-    console.log("Google Sign-In clicked");
-    // TODO: Integrate Google Sign-In SDK
+  const handleGoogleSignIn = async () => {
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      toast({
+        title: "Welcome! 🌟",
+        description: `Signed in as ${result.user.displayName}`,
+      });
+      navigate("/profile");
+    } catch (error: any) {
+      toast({
+        title: "Sign in failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
   };
 
   return (
