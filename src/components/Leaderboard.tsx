@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Crown, Award, Sparkles, ChevronDown, ChevronUp } from "lucide-react";
+import { FAMILY_MEMBERS } from "./FamilyMemberSelector";
 
 interface User {
   id: number;
@@ -13,70 +14,29 @@ interface User {
   avatar?: string;
 }
 
-const mockUsers: User[] = [
-  { id: 1, name: "Fatima", juz: 30, surah: 114, ayah: 6 },
-  { id: 2, name: "Ahmed", juz: 28, surah: 109, ayah: 3 },
-  { id: 3, name: "Yusuf", juz: 25, surah: 95, ayah: 8 },
-  { id: 4, name: "Maryam", juz: 22, surah: 85, ayah: 12 },
-  { id: 5, name: "Ibrahim", juz: 20, surah: 75, ayah: 5 },
-  { id: 6, name: "Khadija", juz: 18, surah: 70, ayah: 2 },
-  { id: 7, name: "Omar", juz: 16, surah: 62, ayah: 11 },
-  { id: 8, name: "Aisha", juz: 15, surah: 58, ayah: 4 },
-  { id: 9, name: "Ali", juz: 14, surah: 55, ayah: 78 },
-  { id: 10, name: "Safiya", juz: 12, surah: 48, ayah: 29 },
-  { id: 11, name: "Bilal", juz: 11, surah: 45, ayah: 37 },
-  { id: 12, name: "Zaynab", juz: 10, surah: 42, ayah: 53 },
-  { id: 13, name: "Hassan", juz: 9, surah: 39, ayah: 75 },
-  { id: 14, name: "Ruqayyah", juz: 8, surah: 36, ayah: 83 },
-  { id: 15, name: "Hamza", juz: 7, surah: 33, ayah: 73 },
-  { id: 16, name: "Sumaya", juz: 6, surah: 30, ayah: 60 },
-  { id: 17, name: "Uthman", juz: 5, surah: 27, ayah: 93 },
-  { id: 18, name: "Asma", juz: 4, surah: 24, ayah: 64 },
-  { id: 19, name: "Zaid", juz: 3, surah: 21, ayah: 112 },
-  { id: 20, name: "Hafsa", juz: 2, surah: 18, ayah: 110 },
-];
-
 const Leaderboard = () => {
-  const [users, setUsers] = useState<User[]>(mockUsers);
+  const [users, setUsers] = useState<User[]>([]);
   const [isExpanded, setIsExpanded] = useState(false);
 
   useEffect(() => {
     const updateLeaderboard = () => {
-      const allUsers: User[] = [...mockUsers];
-      const familyMembers = [
-        "Bilal Qureshi",
-        "Umar Qureshi",
-        "Abdullah Qureshi",
-        "Abir Qureshi",
-        "Ammar Qureshi",
-        "Arif Qureshi",
-        "Hoorab",
-        "Amna",
-        "Lareb",
-        "Mama",
-      ];
+      const allUsers: User[] = [];
 
-      familyMembers.forEach((member, index) => {
+      FAMILY_MEMBERS.forEach((member, index) => {
         const key = `progress_${member.replace(/\s+/g, "_")}`;
         const saved = localStorage.getItem(key);
-        if (saved) {
-          const progress = JSON.parse(saved);
-          const existingIndex = allUsers.findIndex(u => u.id === 900 + index);
-          const user: User = {
-            id: 900 + index,
-            name: member,
-            juz: progress.juz || 0,
-            surah: progress.surah || 1,
-            ayah: progress.ayah || 1,
-            avatar: progress.avatar,
-          };
-          
-          if (existingIndex >= 0) {
-            allUsers[existingIndex] = user;
-          } else {
-            allUsers.push(user);
-          }
-        }
+        const progress = saved ? JSON.parse(saved) : null;
+        
+        const user: User = {
+          id: index + 1,
+          name: member,
+          juz: progress?.juz || 0,
+          surah: progress?.surah || 1,
+          ayah: progress?.ayah || 1,
+          avatar: progress?.avatar,
+        };
+        
+        allUsers.push(user);
       });
 
       const sorted = allUsers.sort((a, b) => {
