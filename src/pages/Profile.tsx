@@ -19,57 +19,66 @@ const Profile = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background relative overflow-hidden">
-      {/* Background decorative elements */}
-      <div className="absolute inset-0 bg-gradient-radial pointer-events-none" />
-      <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
-      <div className="absolute bottom-0 left-0 w-96 h-96 bg-secondary/5 rounded-full blur-3xl" />
+    <div className="min-h-screen bg-gradient-to-b from-background via-primary/5 to-background relative overflow-hidden">
+      {/* Enhanced Background decorative elements */}
+      <div className="absolute inset-0 bg-gradient-radial pointer-events-none opacity-40" />
+      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-br from-primary/20 to-secondary/10 rounded-full blur-3xl animate-pulse" />
+      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-gradient-to-tr from-secondary/20 to-primary/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
       
-      <div className="container max-w-6xl mx-auto py-8 px-6 relative z-10">
+      <div className="container max-w-6xl mx-auto py-12 px-6 relative z-10">
         <Button
           variant="ghost"
           onClick={() => {
             setAuthenticatedMember(null);
             navigate("/");
           }}
-          className="mb-8 hover:bg-primary/10 transition-all"
+          className="mb-8 hover:bg-primary/10 transition-all group"
           aria-label="Go back to dashboard"
         >
-          <ArrowLeft className="mr-2 h-4 w-4" />
+          <ArrowLeft className="mr-2 h-4 w-4 group-hover:-translate-x-1 transition-transform" />
           Back to Dashboard
         </Button>
 
         {!authenticatedMember ? (
-          <FamilyMemberSelector onAuthenticated={handleAuthenticated} />
+          <div className="animate-scale-in">
+            <FamilyMemberSelector onAuthenticated={handleAuthenticated} />
+          </div>
         ) : (
           <div className="space-y-8 animate-fade-in">
-            {/* Welcome Header */}
-            <Card className="bg-gradient-to-br from-card via-card/95 to-card/80 border-2 border-primary/30 backdrop-blur-sm overflow-hidden">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl -z-10" />
-              <CardHeader className="pb-8">
-                <CardTitle className="text-4xl font-bold text-foreground flex items-center gap-3">
-                  <div className="p-3 bg-primary/10 rounded-full border border-primary/30">
-                    <BookOpen className="w-8 h-8 text-primary" />
+            {/* Premium Welcome Header */}
+            <Card className="bg-gradient-to-br from-card via-primary/5 to-card border-2 border-primary/40 backdrop-blur-sm overflow-hidden relative shadow-2xl">
+              <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-primary/20 to-transparent rounded-full blur-3xl" />
+              <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-secondary/20 to-transparent rounded-full blur-3xl" />
+              <CardHeader className="pb-8 relative">
+                <CardTitle className="text-4xl md:text-5xl font-bold text-foreground flex flex-col md:flex-row items-start md:items-center gap-4">
+                  <div className="p-4 bg-gradient-to-br from-primary to-secondary rounded-2xl shadow-lg animate-glow-pulse">
+                    <BookOpen className="w-10 h-10 text-primary-foreground" />
                   </div>
-                  <div>
-                    <div className="text-sm text-muted-foreground font-normal mb-1">As-salamu alaikum,</div>
-                    {authenticatedMember}
+                  <div className="flex-1">
+                    <div className="text-sm md:text-base text-muted-foreground font-normal mb-2 opacity-80">As-salamu alaikum,</div>
+                    <div className="bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent animate-shimmer bg-[length:200%_100%]">
+                      {authenticatedMember}
+                    </div>
                   </div>
                 </CardTitle>
               </CardHeader>
             </Card>
 
             {/* Progress Input */}
-            <ProgressSelector selectedMember={authenticatedMember} />
+            <div className="transform hover:scale-[1.01] transition-transform">
+              <ProgressSelector selectedMember={authenticatedMember} />
+            </div>
 
             {/* Analytics Dashboard */}
-            <ProgressAnalytics />
+            <div className="transform hover:scale-[1.01] transition-transform">
+              <ProgressAnalytics />
+            </div>
 
-            {/* Switch Member Button */}
+            {/* Premium Switch Member Button */}
             <Button
               variant="outline"
               onClick={() => setAuthenticatedMember(null)}
-              className="w-full border-2 border-primary/30 hover:bg-primary/5 hover:border-primary/50 transition-all text-lg py-6"
+              className="w-full border-2 border-primary/40 hover:bg-gradient-to-r hover:from-primary/10 hover:to-secondary/10 hover:border-primary/60 transition-all text-lg py-7 font-semibold shadow-lg hover:shadow-xl"
             >
               Switch Family Member
             </Button>

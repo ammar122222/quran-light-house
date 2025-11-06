@@ -24,8 +24,8 @@ const Index = () => {
       <OnboardingTutorial />
       <Hero user={user} />
       {user && <Dashboard user={user} />}
-      <ActiveStatusCard />
       <Leaderboard />
+      <ActiveStatusCard />
     </div>
   );
 };

@@ -15,9 +15,19 @@ const OnboardingTutorial = () => {
 
   useEffect(() => {
     const hasSeenTutorial = localStorage.getItem("hasSeenTutorial");
-    if (!hasSeenTutorial) {
-      setIsOpen(true);
-    }
+    
+    // Check if user just logged in
+    const checkAuthAndShowTutorial = () => {
+      const justLoggedIn = sessionStorage.getItem("justLoggedIn");
+      if (justLoggedIn) {
+        setIsOpen(true);
+        sessionStorage.removeItem("justLoggedIn");
+      } else if (!hasSeenTutorial) {
+        setIsOpen(true);
+      }
+    };
+
+    checkAuthAndShowTutorial();
   }, []);
 
   const steps = [

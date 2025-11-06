@@ -28,7 +28,14 @@ const AuthForm = ({ onSuccess }: AuthFormProps) => {
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
     try {
-      await signInWithPopup(auth, googleProvider);
+      const result = await signInWithPopup(auth, googleProvider);
+      
+      // Check if this is a new user
+      const isNewUser = result.user.metadata.creationTime === result.user.metadata.lastSignInTime;
+      if (isNewUser) {
+        sessionStorage.setItem("justLoggedIn", "true");
+      }
+      
       toast({
         title: "Welcome! 🌟",
         description: "Successfully signed in with Google",
@@ -69,6 +76,10 @@ const AuthForm = ({ onSuccess }: AuthFormProps) => {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       await updateProfile(userCredential.user, { displayName: name });
+      
+      // Set flag to show tutorial on signup
+      sessionStorage.setItem("justLoggedIn", "true");
+      
       toast({
         title: "Account created! 🎉",
         description: `Welcome, ${name}!`,

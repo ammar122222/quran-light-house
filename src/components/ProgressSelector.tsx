@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { BookOpen, Save } from "lucide-react";
+import { BookOpen, Save, Trash2 } from "lucide-react";
 
 interface ProgressData {
   juz: number;
@@ -62,6 +62,27 @@ const ProgressSelector = ({ selectedMember }: ProgressSelectorProps) => {
     });
   };
 
+  const handleDelete = () => {
+    const key = `progress_${selectedMember.replace(/\s+/g, "_")}`;
+    localStorage.removeItem(key);
+    
+    setProgress({
+      juz: 0,
+      surah: 1,
+      ayah: 1,
+      name: selectedMember,
+      lastUpdated: Date.now(),
+    });
+
+    window.dispatchEvent(new Event("storage"));
+
+    toast({
+      title: "Progress Deleted",
+      description: `${selectedMember}'s progress has been reset.`,
+      variant: "destructive",
+    });
+  };
+
   return (
     <Card className="bg-card border-border">
       <CardHeader>
@@ -105,13 +126,22 @@ const ProgressSelector = ({ selectedMember }: ProgressSelectorProps) => {
             />
           </div>
         </div>
-        <Button
-          onClick={handleSave}
-          className="w-full bg-secondary text-secondary-foreground hover:bg-secondary/80"
-        >
-          <Save className="mr-2 h-4 w-4" />
-          Save Progress
-        </Button>
+        <div className="flex gap-3">
+          <Button
+            onClick={handleSave}
+            className="flex-1 bg-secondary text-secondary-foreground hover:bg-secondary/80"
+          >
+            <Save className="mr-2 h-4 w-4" />
+            Save Progress
+          </Button>
+          <Button
+            onClick={handleDelete}
+            variant="destructive"
+            className="px-4"
+          >
+            <Trash2 className="h-4 w-4" />
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );
