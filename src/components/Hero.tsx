@@ -68,7 +68,7 @@ const Hero = ({ user }: HeroProps) => {
         )}
 
         {/* Main heading */}
-        <h1 className="text-5xl md:text-7xl font-bold mb-4 bg-gradient-shine bg-clip-text text-transparent animate-shimmer bg-[length:200%_100%]">
+        <h1 className="text-5xl md:text-7xl font-bold mb-4 mt-12 bg-gradient-shine bg-clip-text text-transparent animate-shimmer bg-[length:200%_100%]">
           Noor Journey
         </h1>
         
