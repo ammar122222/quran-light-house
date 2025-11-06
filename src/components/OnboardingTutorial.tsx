@@ -7,7 +7,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { BookOpen, Users, Trophy, TrendingUp, ChevronRight } from "lucide-react";
+import { BookOpen, Users, Trophy, TrendingUp, ChevronRight, Sparkles } from "lucide-react";
 
 const OnboardingTutorial = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -65,38 +65,69 @@ const OnboardingTutorial = () => {
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <div className="flex justify-center mb-4">{currentStep.icon}</div>
-          <DialogTitle className="text-center text-2xl">
+      <DialogContent className="sm:max-w-2xl border-2 border-primary/30 bg-gradient-to-br from-card via-card to-card/80 backdrop-blur-xl">
+        {/* Decorative elements */}
+        <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl -z-10" />
+        <div className="absolute bottom-0 left-0 w-32 h-32 bg-secondary/10 rounded-full blur-3xl -z-10" />
+        
+        <DialogHeader className="space-y-6">
+          <div className="flex justify-center mb-6 relative">
+            <div className="absolute inset-0 flex items-center justify-center">
+              <Sparkles className="w-16 h-16 text-primary/20 animate-pulse" />
+            </div>
+            <div className="relative z-10 p-6 bg-primary/10 rounded-full border-2 border-primary/30 animate-gentle-pulse">
+              {currentStep.icon}
+            </div>
+          </div>
+          
+          <DialogTitle className="text-center text-3xl font-bold bg-gradient-shine bg-clip-text text-transparent animate-shimmer bg-[length:200%_100%]">
             {currentStep.title}
           </DialogTitle>
-          <DialogDescription className="text-center text-base pt-2">
+          
+          <DialogDescription className="text-center text-lg pt-2 text-foreground/90 leading-relaxed px-4">
             {currentStep.description}
           </DialogDescription>
         </DialogHeader>
-        <div className="flex justify-center gap-2 my-4">
+
+        {/* Progress indicators */}
+        <div className="flex justify-center gap-3 my-8">
           {steps.map((_, index) => (
             <div
               key={index}
-              className={`h-2 w-2 rounded-full transition-all ${
-                index === step ? "bg-primary w-8" : "bg-muted"
+              className={`h-2.5 rounded-full transition-all duration-500 ${
+                index === step 
+                  ? "bg-gradient-to-r from-primary to-secondary w-12 shadow-glow" 
+                  : index < step
+                  ? "bg-primary/50 w-8"
+                  : "bg-muted w-8"
               }`}
             />
           ))}
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={handleSkip} className="flex-1">
-            Skip
+
+        {/* Action buttons */}
+        <div className="flex gap-4 pt-4">
+          <Button 
+            variant="outline" 
+            onClick={handleSkip} 
+            className="flex-1 border-2 border-primary/30 hover:bg-primary/5 hover:border-primary/50 transition-all"
+          >
+            Skip Tutorial
           </Button>
-          <Button onClick={handleNext} className="flex-1">
+          <Button 
+            onClick={handleNext} 
+            className="flex-1 bg-gradient-to-r from-primary to-secondary hover:opacity-90 text-primary-foreground font-semibold shadow-glow transition-all hover:scale-105"
+          >
             {step < steps.length - 1 ? (
               <>
-                Next
-                <ChevronRight className="ml-2 h-4 w-4" />
+                Continue
+                <ChevronRight className="ml-2 h-5 w-5" />
               </>
             ) : (
-              "Get Started"
+              <>
+                <Sparkles className="mr-2 h-5 w-5" />
+                Begin Journey
+              </>
             )}
           </Button>
         </div>

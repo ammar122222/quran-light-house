@@ -67,15 +67,6 @@ const Hero = ({ user }: HeroProps) => {
           </div>
         )}
 
-        {/* Greeting */}
-        <div className="mb-6 flex items-center justify-center gap-2">
-          <Sparkles className="w-5 h-5 text-primary animate-glow-pulse" aria-hidden="true" />
-          <p className="text-primary font-medium" role="banner">
-            {user ? `As-salamu alaikum, ${user.displayName?.split(' ')[0]}` : "As-salamu alaikum"}
-          </p>
-          <Sparkles className="w-5 h-5 text-primary animate-glow-pulse" aria-hidden="true" />
-        </div>
-
         {/* Main heading */}
         <h1 className="text-5xl md:text-7xl font-bold mb-4 bg-gradient-shine bg-clip-text text-transparent animate-shimmer bg-[length:200%_100%]">
           Noor Journey
@@ -84,6 +75,17 @@ const Hero = ({ user }: HeroProps) => {
         <p className="text-sm md:text-base text-muted-foreground mb-6 italic">
           for Qurayshi Family
         </p>
+
+        {/* Greeting - moved below title */}
+        {user && (
+          <div className="mb-8 flex items-center justify-center gap-2">
+            <Sparkles className="w-5 h-5 text-primary animate-glow-pulse" aria-hidden="true" />
+            <p className="text-xl text-primary font-medium" role="banner">
+              As-salamu alaikum, {user.displayName?.split(' ')[0]}
+            </p>
+            <Sparkles className="w-5 h-5 text-primary animate-glow-pulse" aria-hidden="true" />
+          </div>
+        )}
         
         <p className="text-xl md:text-2xl text-muted-foreground mb-4 max-w-2xl mx-auto">
           Every heart deserves to hold the Quran.

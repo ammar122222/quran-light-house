@@ -2,6 +2,7 @@ import Hero from "@/components/Hero";
 import Dashboard from "@/components/Dashboard";
 import Leaderboard from "@/components/Leaderboard";
 import OnboardingTutorial from "@/components/OnboardingTutorial";
+import ActiveStatusCard from "@/components/ActiveStatusCard";
 import { useAuth } from "@/hooks/useAuth";
 
 const Index = () => {
@@ -23,6 +24,7 @@ const Index = () => {
       <OnboardingTutorial />
       <Hero user={user} />
       {user && <Dashboard user={user} />}
+      <ActiveStatusCard />
       <Leaderboard />
     </div>
   );
